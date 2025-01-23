@@ -62,7 +62,6 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Add a todo on form submit */}
       <form
         onSubmit={event => {
-          event.preventDefault();
           addTodo(
             inputText,
             setError,
@@ -72,6 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
             allTodos,
             setLoading,
             setTempTodo,
+            event,
           );
         }}
       >

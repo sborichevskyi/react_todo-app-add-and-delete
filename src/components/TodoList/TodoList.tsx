@@ -2,6 +2,7 @@
 import React from 'react';
 import { Todo } from '../../types/Todo';
 import { TodoItem } from '../TodoItem';
+import { FilterEnum } from '../../api/todos';
 
 interface TodoListProps {
   visibleTodos: Todo[];
@@ -9,12 +10,12 @@ interface TodoListProps {
   tempTodo: Todo | null;
   allTodos: Todo[];
   setAllTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-  setVisibleTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   loadingTodoId: number;
   setLoadingTodoId: React.Dispatch<React.SetStateAction<number>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  selectedFilter: FilterEnum;
 }
 
 export const TodoList: React.FC<TodoListProps> = ({
@@ -23,12 +24,12 @@ export const TodoList: React.FC<TodoListProps> = ({
   tempTodo,
   allTodos,
   setAllTodos,
-  setVisibleTodos,
   loadingTodoId,
   setLoadingTodoId,
   setLoading,
   setError,
   setErrorMessage,
+  selectedFilter,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
@@ -36,13 +37,13 @@ export const TodoList: React.FC<TodoListProps> = ({
         visibleTodos={visibleTodos}
         allTodos={allTodos}
         setAllTodos={setAllTodos}
-        setVisibleTodos={setVisibleTodos}
         loadingTodoId={loadingTodoId}
         setLoadingTodoId={setLoadingTodoId}
         loading={loading}
         setLoading={setLoading}
         setError={setError}
         setErrorMessage={setErrorMessage}
+        selectedFilter={selectedFilter}
       />
 
       {loading && tempTodo && (

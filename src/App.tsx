@@ -10,7 +10,6 @@ import { Footer } from './components/Footer';
 import { ErrorNotifications } from './components/ErrorNotifications';
 
 export const App: React.FC = () => {
-  const [visibleTodos, setVisibleTodos] = useState<Todo[]>([]);
   const [allTodos, setAllTodos] = useState<Todo[]>([]);
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +31,6 @@ export const App: React.FC = () => {
     getTodos()
       .then(todosFromServer => {
         setAllTodos(todosFromServer);
-        setVisibleTodos(todosFromServer);
         setCompletedLentgh(
           todosFromServer.filter(todo => !todo.completed).length,
         );
@@ -48,8 +46,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     setCompletedLentgh(allTodos.filter(todo => !todo.completed).length);
-    filterTodos(selectedFilter, setVisibleTodos, allTodos);
   }, [allTodos, selectedFilter]);
+
+  const visibleTodos = filterTodos(selectedFilter, allTodos);
 
   if (!USER_ID) {
     return <UserWarning />;
@@ -79,12 +78,12 @@ export const App: React.FC = () => {
           tempTodo={tempTodo}
           allTodos={allTodos}
           setAllTodos={setAllTodos}
-          setVisibleTodos={setVisibleTodos}
           loadingTodoId={loadingTodoId}
           setLoadingTodoId={setLoadingTodoId}
           setLoading={setLoading}
           setError={setError}
           setErrorMessage={setErrorMessage}
+          selectedFilter={selectedFilter}
         />
 
         {/* Hide the footer if there are no todos */}
@@ -92,7 +91,6 @@ export const App: React.FC = () => {
           <Footer
             selectedFilter={selectedFilter}
             setSelectedFilter={setSelectedFilter}
-            setVisibleTodos={setVisibleTodos}
             completedLentgh={completedLentgh}
             allTodos={allTodos}
             setCompletedLentgh={setCompletedLentgh}

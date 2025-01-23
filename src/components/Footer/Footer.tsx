@@ -1,12 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Todo } from '../../types/Todo';
-import { clearCompleted, FilterEnum, filterTodos } from '../../api/todos';
+import { clearCompleted, filterClick, FilterEnum } from '../../api/todos';
 
 interface FooterProps {
   selectedFilter: string;
   setSelectedFilter: React.Dispatch<React.SetStateAction<FilterEnum>>;
-  setVisibleTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   completedLentgh: number;
   allTodos: Todo[];
   setCompletedLentgh: React.Dispatch<React.SetStateAction<number>>;
@@ -19,7 +18,6 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({
   selectedFilter,
   setSelectedFilter,
-  setVisibleTodos,
   completedLentgh,
   allTodos,
   setAllTodos,
@@ -45,12 +43,12 @@ export const Footer: React.FC<FooterProps> = ({
                 selected: selectedFilter === curFilter,
               })}
               onClick={() => {
-                if (selectedFilter === curFilter) {
-                  return;
-                }
-
-                setSelectedFilter(curFilter);
-                filterTodos(curFilter, setVisibleTodos, allTodos);
+                filterClick(
+                  setSelectedFilter,
+                  curFilter,
+                  selectedFilter,
+                  allTodos,
+                );
               }}
             >
               {curFilter.charAt(0).toUpperCase() + curFilter.slice(1)}
@@ -66,7 +64,6 @@ export const Footer: React.FC<FooterProps> = ({
         data-cy="ClearCompletedButton"
         disabled={!allTodos.some(todo => todo.completed)}
         onClick={() => {
-          setLoading(true);
           clearCompleted(
             allTodos,
             setAllTodos,

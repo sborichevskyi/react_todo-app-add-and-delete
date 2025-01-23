@@ -21,28 +21,18 @@ export enum FilterEnum {
   COMPLETED = 'completed',
 }
 
-export const filterTodos = async (
-  curFilter: FilterEnum,
-  setVisibleTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
-  allTodos: Todo[],
-) => {
+export const filterTodos = (curFilter: FilterEnum, allTodos: Todo[]) => {
   switch (curFilter) {
     case FilterEnum.ALL:
-      setVisibleTodos(allTodos);
-
-      break;
+      return allTodos;
     case FilterEnum.ACTIVE:
       const activeTodos = getActiveTodos(allTodos);
 
-      setVisibleTodos(activeTodos);
-
-      break;
+      return activeTodos;
     case FilterEnum.COMPLETED:
       const completedTodos = getCompletedTodos(allTodos);
 
-      setVisibleTodos(completedTodos);
-
-      break;
+      return completedTodos;
     default:
       throw new Error(`Unsupported filter type: ${curFilter}`);
   }
@@ -52,19 +42,21 @@ export const deleteTodo = (
   id: number,
   allTodos: Todo[],
   setAllTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
-  setVisibleTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setError: React.Dispatch<React.SetStateAction<boolean>>,
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>,
+  setLoadingTodoId: React.Dispatch<React.SetStateAction<number>>,
+  selectedFilter: FilterEnum,
 ) => {
   setLoading(true);
+  setLoadingTodoId(id);
   client
     .delete(`/todos/${id}`)
     .then(() => {
       const updatedTodos = allTodos.filter(todo => todo.id !== id);
 
       setAllTodos(updatedTodos);
-      setVisibleTodos(updatedTodos);
+      filterTodos(selectedFilter, allTodos);
     })
     .catch(() => {
       setError(true);
@@ -84,7 +76,9 @@ export const addTodo = (
   allTodos: Todo[],
   setLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setTempTodo: React.Dispatch<React.SetStateAction<Todo | null>>,
+  event: React.FormEvent<HTMLFormElement>,
 ) => {
+  event.preventDefault();
   setLoading(true);
 
   if (inputText.trim() === '') {
@@ -167,4 +161,18 @@ export const clearCompleted = async (
   } finally {
     setLoading(false);
   }
+};
+
+export const filterClick = (
+  setSelectedFilter: React.Dispatch<React.SetStateAction<FilterEnum>>,
+  curFilter: FilterEnum,
+  selectedFilter: string,
+  allTodos: Todo[],
+) => {
+  if (selectedFilter === curFilter) {
+    return;
+  }
+
+  setSelectedFilter(curFilter);
+  filterTodos(curFilter, allTodos);
 };

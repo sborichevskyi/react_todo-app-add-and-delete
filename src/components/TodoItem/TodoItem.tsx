@@ -2,32 +2,32 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Todo } from '../../types/Todo';
-import { deleteTodo } from '../../api/todos';
+import { deleteTodo, FilterEnum } from '../../api/todos';
 
 interface TodoItemProps {
   visibleTodos: Todo[];
   allTodos: Todo[];
   setAllTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
-  setVisibleTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   loadingTodoId: number;
   setLoadingTodoId: React.Dispatch<React.SetStateAction<number>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  selectedFilter: FilterEnum;
 }
 
 export const TodoItem: React.FC<TodoItemProps> = ({
   visibleTodos,
   allTodos,
   setAllTodos,
-  setVisibleTodos,
   loadingTodoId,
   setLoadingTodoId,
   loading,
   setLoading,
   setError,
   setErrorMessage,
+  selectedFilter,
 }) => {
   return (
     <>
@@ -59,15 +59,15 @@ export const TodoItem: React.FC<TodoItemProps> = ({
               className="todo__remove"
               data-cy="TodoDelete"
               onClick={() => {
-                setLoadingTodoId(todo.id);
                 deleteTodo(
                   todo.id,
                   allTodos,
                   setAllTodos,
-                  setVisibleTodos,
                   setLoading,
                   setError,
                   setErrorMessage,
+                  setLoadingTodoId,
+                  selectedFilter,
                 );
               }}
             >
